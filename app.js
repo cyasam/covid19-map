@@ -3,7 +3,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var serverless = require('serverless-http');
 
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api/index');
@@ -12,7 +11,6 @@ var { storeAllCountriesInJson } = require('./utils/index');
 var app = express();
 
 // view engine setup
-app.engine('pug', require('pug').__express);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -24,8 +22,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
-app.use('/.netlify/functions/app', indexRouter);
-app.use('/.netlify/functions/app/api', apiRouter);
 
 storeAllCountriesInJson();
 
@@ -46,4 +42,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-module.exports.handler = serverless(app);
