@@ -1,0 +1,124 @@
+:root {
+  --background-color: #1e2128;
+  --active-color: #d21a1a;
+  --loading-size: 48px;
+  --loading-thickness: 6px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
+  background-color: var(--background-color);
+  color: #fff;
+}
+
+/* Loading */
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-dual-ring:after {
+  content: ' ';
+  display: block;
+  width: var(--loading-size);
+  height: var(--loading-size);
+  margin: 8px;
+  border-radius: 50%;
+  border: var(--loading-thickness) solid var(--active-color);
+  border-color: var(--active-color) transparent var(--active-color) transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* General */
+#wrapper,
+#map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: #191a1a;
+}
+
+.info-box {
+  display: none;
+}
+
+.custom-tooltip {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.custom-tooltip:before {
+  display: none;
+}
+
+.case-tooltip {
+  min-width: 120px;
+  padding: 10px;
+}
+
+.case-tooltip h3 {
+  margin-top: 0;
+  font-size: 16px;
+  text-align: center;
+}
+
+.case-tooltip table {
+  border-spacing: 0;
+  border-collapse: separate;
+  font-size: 13px;
+}
+
+.case-tooltip table td {
+  padding: 5px;
+}
+
+.case-tooltip td:first-child {
+  padding-right: 20px;
+}
+
+.case-tooltip td:nth-child(2) {
+  text-align: center;
+}
+
+.case-tooltip tr.confirmed {
+  background-color: rgba(255, 65, 108, 0.6);
+}
+
+.case-tooltip tr.active {
+  background-color: rgba(40, 110, 255, 0.6);
+}
+
+.case-tooltip tr.deaths {
+  background-color: rgba(134, 67, 230, 0.6);
+}
+
+.case-tooltip tr.recovered {
+  background-color: rgba(97, 206, 129, 0.6);
+}
+
+#error {
+  padding: 20px;
+}
