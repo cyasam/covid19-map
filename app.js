@@ -23,6 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
+app.use('/.netlify/functions/app', indexRouter);
+app.use('/.netlify/functions/app/api', apiRouter);
 
 storeAllCountriesInJson();
 

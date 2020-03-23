@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build": "netlify-lambda build app.js"
+    "build": "./node_modules/.bin/netlify-lambda build ./"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -16,5 +16,8 @@
     "morgan": "~1.10.0",
     "pug": "^2.0.4",
     "serverless-http": "^2.3.2"
+  },
+  "devDependencies": {
+    "netlify-lambda": "^1.6.3"
   }
 }
