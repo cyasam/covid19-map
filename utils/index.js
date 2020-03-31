@@ -1,5 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
+var moment = require('moment');
 
 const API_URL = 'https://corona.lmao.ninja';
 
@@ -15,7 +16,7 @@ const getAllCaseData = async () => {
   }
 };
 
-const getAllCaseDataPerRegion = async () => {
+const getAllCaseDataByCountry = async () => {
   const url = `${API_URL}/countries`;
 
   try {
@@ -59,9 +60,9 @@ const storeAllCountriesInJson = async () => {
       return {
         country,
         province,
-        coordinates
+        coordinates,
       };
-    }
+    },
   );
   var data = JSON.stringify(modifiedCountryList);
 
@@ -84,11 +85,21 @@ const getAllCountriesListFromJson = () => {
   }
 };
 
+const formatDate = updated => {
+  return moment(updated).format('DD MMM YYYY HH:mm');
+};
+
+const formatNumber = number => {
+  return new Intl.NumberFormat('en-US').format(number);
+};
+
 module.exports = {
   getAllCaseData,
-  getAllCaseDataPerRegion,
+  getAllCaseDataByCountry,
   getCaseDataByCountry,
   getAllCountriesData,
   storeAllCountriesInJson,
-  getAllCountriesListFromJson
+  getAllCountriesListFromJson,
+  formatDate,
+  formatNumber,
 };

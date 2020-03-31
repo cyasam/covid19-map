@@ -1,21 +1,21 @@
 'use strict';
 
 (function() {
+  var allDataWithCircle;
   function createTile(map) {
     L.tileLayer(
       'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
       {
         attribution:
           'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 6,
         minZoom: 2,
         id: 'mapbox/dark-v10',
         tileSize: 512,
         zoomOffset: -1,
         wheelDebounceTime: 100,
         accessToken:
-          'pk.eyJ1IjoiY3lhc2FtIiwiYSI6ImNrODM0d2t5aDAwdmYzbWp1aHVwa29wMTAifQ.EYyara4FIFASFahgWAiVWw'
-      }
+          'pk.eyJ1IjoiY3lhc2FtIiwiYSI6ImNrODM0d2t5aDAwdmYzbWp1aHVwa29wMTAifQ.EYyara4FIFASFahgWAiVWw',
+      },
     ).addTo(map);
   }
 
@@ -39,27 +39,41 @@
     }
   }
 
-  function getAllDataWithCircle(allData, map) {
+  function formatNumber(number) {
+    return new Intl.NumberFormat('en-US').format(number);
+  }
+
+  function getAllDataWithCircle(allData, map, graphVariables) {
+    var dataType = 'confirmed';
+    var borderColor = 'rgba(255, 65, 108, 0.8)';
+    var bgColor = 'rgba(255, 65, 108, 0.8)';
+
+    if (graphVariables) {
+      dataType = graphVariables.dataType;
+      borderColor = graphVariables.borderColor;
+      bgColor = graphVariables.bgColor;
+    }
+
     return allData.map(function(data) {
       var {
-        coordinates: { latitude, longitude }
+        coordinates: { latitude, longitude },
       } = data;
 
       var circle = null;
 
       if (data.stats.confirmed > 0) {
         circle = L.circleMarker([latitude, longitude], {
-          color: 'red',
-          fillColor: '#f03',
+          color: borderColor,
+          fillColor: bgColor,
           fillOpacity: 0.5,
           weight: 2,
-          radius: setCircleRadius(data.stats.confirmed)
+          radius: setCircleRadius(data.stats[dataType]),
         }).addTo(map);
       }
 
       return {
         ...data,
-        circle
+        circle,
       };
     });
   }
@@ -67,38 +81,95 @@
   function createCircles(allData, map) {
     allData.forEach(function(data) {
       if (data.stats.confirmed > 0) {
+        var tooltipHeading = data.province
+          ? `${data.city ? `${data.city},` : ''} ${data.province}, ${
+              data.country
+            }`
+          : data.country;
+
+        var todayConfirmed = data.stats.todayConfirmed;
+
         var html = `
         <div class="case-tooltip">
-          <h3>${data.province || data.country}</h3>
-          <table>
-            <tr class="confirmed">
-              <td>Confirmed</td>
-              <td>${data.stats.confirmed}</td>
-            </tr>
-            <tr class="active">
-              <td>Active</td>
-              <td>${data.stats.active}</td>
-            </tr>
-            <tr class="deaths">
-              <td>Deaths</td>
-              <td>${data.stats.deaths}</td>
-            </tr>
-            <tr class="recovered">
-              <td>Recovered</td>
-              <td>${data.stats.recovered}</td>
-            </tr>
-          </table>
+          <figure class="case-tooltip-flag">
+            <img src="${data.flag}" title="${data.country}" />
+            <div class="title">
+              <h3>${tooltipHeading}</h3>
+            </div>
+            ${
+              todayConfirmed > 0
+                ? `<p class="today-confirmed">+${formatNumber(
+                    todayConfirmed,
+                  )}</p>`
+                : ''
+            }
+          </figure>
+
+          <div class="case-tooltip-inner">
+            <ul class="numbers">
+              <li class="confirmed">
+                <span class="label">Confirmed</span>
+                <span class="number">${formatNumber(
+                  data.stats.confirmed,
+                )}</span>
+              </li>
+              <li class="active">
+                <span class="label">Active</span>
+                <span class="number">${formatNumber(data.stats.active)}</span>
+              </li>
+              <li class="deaths">
+                <span class="label">Deaths</span>
+                <span class="number">${formatNumber(data.stats.deaths)}</span>
+              </li>
+              <li class="recovered">
+                <span class="label">Recovered</span>
+                <span class="number">${formatNumber(
+                  data.stats.recovered,
+                )}</span>
+              </li>
+            </ul>
+          </div>
         </div>`;
 
         data.circle
           .bindTooltip(html, {
             sticky: true,
             className: 'custom-tooltip',
-            offset: L.point(15, 15)
+            offset: L.point(15, 15),
           })
           .addTo(map);
       }
     });
+  }
+
+  function changeCircleProps(props) {
+    allDataWithCircle.forEach(function(data) {
+      if (data.circle) {
+        data.circle.setRadius(setCircleRadius(data.stats[props.dataType]));
+        data.circle.setStyle({
+          fillColor: props.bgColor,
+          color: props.borderColor,
+        });
+      }
+    });
+  }
+
+  function handleClickStatsButton(event) {
+    var target = event.target;
+    var statsButtonActiveEl = document.querySelector('.stats-button.active');
+    statsButtonActiveEl.classList.remove('active');
+    statsButtonActiveEl.disabled = false;
+
+    target.classList.add('active');
+    target.disabled = true;
+
+    var props = {
+      dataType: target.getAttribute('data-stats-type'),
+      borderColor: target.getAttribute('data-stats-border-color'),
+      bgColor: target.getAttribute('data-stats-bg-color'),
+    };
+
+    changeCircleProps(props);
   }
 
   fetch('/api/all-data')
@@ -106,37 +177,51 @@
       return response.json();
     })
     .then(function(allData) {
-      document.getElementsByClassName('lds-dual-ring')[0].remove();
+      fetch('http://ip-api.com/json')
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(geoData) {
+          document.getElementById('loading').remove();
 
-      var map = L.map('map').setView([45, 35], 4);
+          var map = L.map('map').setView([45, 35], 4);
+          map.panTo(new L.LatLng(geoData.lat, geoData.lon));
 
-      createTile(map);
+          createTile(map);
 
-      var allDataWithCircle = getAllDataWithCircle(allData, map);
-      createCircles(allDataWithCircle, map);
+          allDataWithCircle = getAllDataWithCircle(allData, map);
+          createCircles(allDataWithCircle, map);
 
-      var myZoom = {
-        start: map.getZoom(),
-        end: map.getZoom()
-      };
+          var myZoom = {
+            start: map.getZoom(),
+            end: map.getZoom(),
+          };
 
-      map.on('zoomstart', function(e) {
-        myZoom.start = map.getZoom();
-      });
+          map.on('zoomstart', function(e) {
+            myZoom.start = map.getZoom();
+          });
 
-      map.on('zoomend', function(e) {
-        myZoom.end = map.getZoom();
-        var diff = myZoom.start - myZoom.end;
+          map.on('zoomend', function(e) {
+            myZoom.end = map.getZoom();
+            var diff = myZoom.start - myZoom.end;
 
-        allDataWithCircle.map(function(data) {
-          if (data.circle) {
-            if (diff > 0) {
-              data.circle.setRadius(data.circle.getRadius() * 1);
-            } else if (diff < 0) {
-              data.circle.setRadius(data.circle.getRadius() / 1);
-            }
-          }
+            allDataWithCircle.forEach(function(data) {
+              if (data.circle) {
+                if (diff > 0) {
+                  data.circle.setRadius(data.circle.getRadius() * 1);
+                } else if (diff < 0) {
+                  data.circle.setRadius(data.circle.getRadius() / 1);
+                }
+              }
+            });
+          });
+
+          // stats button click event
+
+          var statsButtonEl = document.querySelectorAll('.stats-button');
+          statsButtonEl.forEach(function(button) {
+            button.addEventListener('click', handleClickStatsButton);
+          });
         });
-      });
     });
 })();

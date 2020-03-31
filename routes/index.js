@@ -1,27 +1,27 @@
 var express = require('express');
 var router = express.Router();
-var moment = require('moment');
 
-var { getAllCaseData, getAllCaseDataPerRegion } = require('../utils/index');
+var { getAllCaseData, formatDate, formatNumber } = require('../utils/index');
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
-  const allCountryData = await getAllCaseData();
-  const allCountryDataPerRegion = await getAllCaseDataPerRegion();
-
-  const lastUpdate = moment(allCountryData.updated).format(
-    'DD-MM-YYYY HH:mm:ss'
-  );
+  const {
+    cases: confirmed,
+    recovered,
+    deaths,
+    active,
+    updated,
+  } = await getAllCaseData();
 
   res.render('index', {
     title: 'COVID-19 Spread Map',
-    allCountryData: {
-      cases: allCountryData.cases,
-      recovered: allCountryData.recovered,
-      deaths: allCountryData.deaths,
-      lastUpdate: lastUpdate
+    summary: {
+      confirmed: formatNumber(confirmed),
+      active: formatNumber(active),
+      recovered: formatNumber(recovered),
+      deaths: formatNumber(deaths),
+      lastUpdated: formatDate(updated),
     },
-    allCountryDataPerRegion
   });
 });
 

@@ -1,0 +1,16 @@
+div(id="right-column") 
+  div(class="summary info-box")
+    p Last Update #{summary.lastUpdated}
+    div(class="buttons")
+      button(class="stats-button active" disabled data-stats-type="confirmed" data-stats-bg-color="rgba(255, 65, 108, 0.8)" data-stats-border-color="rgba(255, 65, 108, 0.8)") 
+        h4 Confirmed 
+        span #{summary.confirmed}
+      button(class="stats-button" data-stats-type="active" data-stats-bg-color="rgba(40, 110, 255, 0.8)" data-stats-border-color="rgba(40, 110, 255, 0.8)") 
+        h4 Active
+        span #{summary.active}
+      button(class="stats-button" data-stats-type="deaths" data-stats-bg-color="rgba(134, 67, 230, 0.8)" data-stats-border-color="rgba(134, 67, 230, 0.8)")
+        h4 Deaths
+        span #{summary.deaths}
+      button(class="stats-button" data-stats-type="recovered" data-stats-bg-color="rgba(97, 206, 129, 0.8)" data-stats-border-color="rgba(97, 206, 129, 0.8)")
+        h4 Recovered
+        span #{summary.recovered}

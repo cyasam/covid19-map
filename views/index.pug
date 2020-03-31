@@ -2,7 +2,8 @@ extends layout.pug
 
 block content
   div(id="map")
-    div(class="lds-dual-ring")
  
-  div(class="info-box") 
-    include ./includes/summary.pug
+  include ./includes/summary.pug
+
+  div(id="loading")
+    div(class="lds-dual-ring")
