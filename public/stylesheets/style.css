@@ -19,7 +19,7 @@ body {
 body {
   padding: 0;
   margin: 0;
-  font: 15px 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI',
+  font: 14px 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI',
     -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
   background-color: var(--background-color);
   color: #fff;
@@ -154,8 +154,8 @@ body {
   left: 50%;
   transform: translate3d(-50%, 0, 0);
   z-index: 1;
-  padding: 5px 12px;
-  font-size: 15px;
+  padding: 3px 12px;
+  font-size: 14px;
   margin: 0;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
