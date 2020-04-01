@@ -17,6 +17,9 @@ router.get('/all-data', async function(req, res, next) {
         country,
         cases: confirmed,
         todayCases: todayConfirmed,
+        todayActive,
+        todayDeaths,
+        todayRecovered,
         active,
         recovered,
         deaths,
@@ -33,10 +36,15 @@ router.get('/all-data', async function(req, res, next) {
         },
         stats: {
           confirmed,
-          todayConfirmed,
           active,
           recovered,
           deaths,
+          today: {
+            confirmed: todayConfirmed,
+            active: todayActive || null,
+            deaths: todayDeaths,
+            recovered: todayRecovered || null,
+          },
         },
         lastUpdated: formatDate(updated),
       };

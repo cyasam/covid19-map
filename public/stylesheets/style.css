@@ -146,7 +146,7 @@ body {
   text-align: center;
 }
 
-.case-tooltip-flag .today-confirmed {
+.case-tooltip-flag .today {
   display: flex;
   align-items: center;
   position: absolute;
@@ -156,10 +156,25 @@ body {
   z-index: 1;
   padding: 5px 12px;
   font-size: 15px;
-  background-color: var(--confirmed-color);
   margin: 0;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+
+.case-tooltip-flag .today.confirmed {
+  background-color: var(--confirmed-color);
+}
+
+.case-tooltip-flag .today.active {
+  background-color: var(--active-color);
+}
+
+.case-tooltip-flag .today.deaths {
+  background-color: var(--deaths-color);
+}
+
+.case-tooltip-flag .today.recovered {
+  background-color: var(--recovered-color);
 }
 
 .case-tooltip .date {

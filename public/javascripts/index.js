@@ -2,6 +2,7 @@
 
 (function() {
   var allDataWithCircle;
+
   function createTile(map) {
     L.tileLayer(
       'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
@@ -29,9 +30,9 @@
     } else if (number >= 500 && number < 1000) {
       return 12;
     } else if (number >= 1000 && number < 10000) {
-      return 14;
-    } else if (number >= 10000 && number < 50000) {
       return 20;
+    } else if (number >= 10000 && number < 50000) {
+      return 30;
     } else if (number >= 50000) {
       return 40;
     } else {
@@ -81,55 +82,7 @@
   function createCircles(allData, map) {
     allData.forEach(function(data) {
       if (data.stats.confirmed > 0) {
-        var tooltipHeading = data.province
-          ? `${data.city ? `${data.city},` : ''} ${data.province}, ${
-              data.country
-            }`
-          : data.country;
-
-        var todayConfirmed = data.stats.todayConfirmed;
-
-        var html = `
-        <div class="case-tooltip">
-          <figure class="case-tooltip-flag">
-            <img src="${data.flag}" title="${data.country}" />
-            <div class="title">
-              <h3>${tooltipHeading}</h3>
-            </div>
-            ${
-              todayConfirmed > 0
-                ? `<p class="today-confirmed">+${formatNumber(
-                    todayConfirmed,
-                  )}</p>`
-                : ''
-            }
-          </figure>
-
-          <div class="case-tooltip-inner">
-            <ul class="numbers">
-              <li class="confirmed">
-                <span class="label">Confirmed</span>
-                <span class="number">${formatNumber(
-                  data.stats.confirmed,
-                )}</span>
-              </li>
-              <li class="active">
-                <span class="label">Active</span>
-                <span class="number">${formatNumber(data.stats.active)}</span>
-              </li>
-              <li class="deaths">
-                <span class="label">Deaths</span>
-                <span class="number">${formatNumber(data.stats.deaths)}</span>
-              </li>
-              <li class="recovered">
-                <span class="label">Recovered</span>
-                <span class="number">${formatNumber(
-                  data.stats.recovered,
-                )}</span>
-              </li>
-            </ul>
-          </div>
-        </div>`;
+        var html = createTooltipHtml(data, 'confirmed');
 
         data.circle
           .bindTooltip(html, {
@@ -142,14 +95,60 @@
     });
   }
 
+  function createTooltipHtml(data, mapType) {
+    var tooltipHeading = data.province
+      ? `${data.city ? `${data.city},` : ''} ${data.province}, ${data.country}`
+      : data.country;
+
+    var todayStat = data.stats.today[mapType];
+
+    return `
+    <div class="case-tooltip">
+      <figure class="case-tooltip-flag">
+        <img src="${data.flag}" title="${data.country}" />
+        <div class="title">
+          <h3>${tooltipHeading}</h3>
+        </div>
+        ${
+          todayStat > 0
+            ? `<p class="today ${mapType}">+${formatNumber(todayStat)}</p>`
+            : ''
+        }
+      </figure>
+
+      <div class="case-tooltip-inner">
+        <ul class="numbers">
+          <li class="confirmed">
+            <span class="label">Confirmed</span>
+            <span class="number">${formatNumber(data.stats.confirmed)}</span>
+          </li>
+          <li class="active">
+            <span class="label">Active</span>
+            <span class="number">${formatNumber(data.stats.active)}</span>
+          </li>
+          <li class="deaths">
+            <span class="label">Deaths</span>
+            <span class="number">${formatNumber(data.stats.deaths)}</span>
+          </li>
+          <li class="recovered">
+            <span class="label">Recovered</span>
+            <span class="number">${formatNumber(data.stats.recovered)}</span>
+          </li>
+        </ul>
+      </div>
+    </div>`;
+  }
+
   function changeCircleProps(props) {
     allDataWithCircle.forEach(function(data) {
       if (data.circle) {
-        data.circle.setRadius(setCircleRadius(data.stats[props.dataType]));
+        data.circle.setRadius(setCircleRadius(data.stats[props.mapType]));
         data.circle.setStyle({
           fillColor: props.bgColor,
           color: props.borderColor,
         });
+
+        data.circle.setTooltipContent(createTooltipHtml(data, props.mapType));
       }
     });
   }
@@ -164,7 +163,7 @@
     target.disabled = true;
 
     var props = {
-      dataType: target.getAttribute('data-stats-type'),
+      mapType: target.getAttribute('data-stats-type'),
       borderColor: target.getAttribute('data-stats-border-color'),
       bgColor: target.getAttribute('data-stats-bg-color'),
     };
