@@ -23,9 +23,11 @@ router.get('/all-data', async function(req, res, next) {
         active,
         recovered,
         deaths,
-        countryInfo: { lat: latitude, long: longitude, flag },
+        countryInfo: { lat: latitude, long: longitude, iso2 },
         updated,
       } = data;
+
+      const flag = iso2 ? `/images/flags/${iso2.toLowerCase()}.png` : null;
 
       return {
         country,

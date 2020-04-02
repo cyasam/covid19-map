@@ -105,7 +105,7 @@
     return `
     <div class="case-tooltip">
       <figure class="case-tooltip-flag">
-        <img src="${data.flag}" title="${data.country}" />
+        ${data.flag ? `<img src="${data.flag}" title="${data.country}" />` : ''}
         <div class="title">
           <h3>${tooltipHeading}</h3>
         </div>
@@ -184,6 +184,8 @@
           document.getElementById('loading').remove();
 
           var map = L.map('map').setView([45, 35], 4);
+          map.zoomControl.setPosition('bottomleft');
+
           map.panTo(new L.LatLng(geoData.lat, geoData.lon));
 
           createTile(map);
