@@ -1,6 +1,8 @@
 'use strict';
 
-(function() {
+(function () {
+  cssVars();
+
   var allDataWithCircle;
 
   function createTile(map) {
@@ -16,7 +18,7 @@
         wheelDebounceTime: 100,
         accessToken:
           'pk.eyJ1IjoiY3lhc2FtIiwiYSI6ImNrODM0d2t5aDAwdmYzbWp1aHVwa29wMTAifQ.EYyara4FIFASFahgWAiVWw',
-      },
+      }
     ).addTo(map);
   }
 
@@ -55,7 +57,7 @@
       bgColor = graphVariables.bgColor;
     }
 
-    return allData.map(function(data) {
+    return allData.map(function (data) {
       var {
         coordinates: { latitude, longitude },
       } = data;
@@ -72,15 +74,12 @@
         }).addTo(map);
       }
 
-      return {
-        ...data,
-        circle,
-      };
+      return Object.assign(data, { circle });
     });
   }
 
   function createCircles(allData, map) {
-    allData.forEach(function(data) {
+    allData.forEach(function (data) {
       if (data.stats.confirmed > 0) {
         var html = createTooltipHtml(data, 'confirmed');
 
@@ -140,7 +139,7 @@
   }
 
   function changeCircleProps(props) {
-    allDataWithCircle.forEach(function(data) {
+    allDataWithCircle.forEach(function (data) {
       if (data.circle) {
         data.circle.setRadius(setCircleRadius(data.stats[props.mapType]));
         data.circle.setStyle({
@@ -149,6 +148,25 @@
         });
 
         data.circle.setTooltipContent(createTooltipHtml(data, props.mapType));
+      }
+    });
+  }
+
+  function changeCountryList(props) {
+    var countryListEl = document.getElementsByClassName('country-list');
+    countryListEl[0].setAttribute('data-selected-stats-type', props.mapType);
+
+    var countryListLiStatsEl = countryListEl[0].querySelectorAll(
+      '.country .stat'
+    );
+
+    countryListLiStatsEl.forEach(function (stat) {
+      if (stat.classList.contains('show')) {
+        stat.classList.remove('show');
+      }
+
+      if (stat.getAttribute('data-stats-type') === props.mapType) {
+        stat.classList.add('show');
       }
     });
   }
@@ -169,18 +187,19 @@
     };
 
     changeCircleProps(props);
+    changeCountryList(props);
   }
 
   fetch('/api/all-data')
-    .then(function(response) {
+    .then(function (response) {
       return response.json();
     })
-    .then(function(allData) {
+    .then(function (allData) {
       fetch('http://ip-api.com/json')
-        .then(function(response) {
+        .then(function (response) {
           return response.json();
         })
-        .then(function(geoData) {
+        .then(function (geoData) {
           document.getElementById('loading').remove();
 
           var map = L.map('map').setView([45, 35], 4);
@@ -198,15 +217,15 @@
             end: map.getZoom(),
           };
 
-          map.on('zoomstart', function(e) {
+          map.on('zoomstart', function (e) {
             myZoom.start = map.getZoom();
           });
 
-          map.on('zoomend', function(e) {
+          map.on('zoomend', function (e) {
             myZoom.end = map.getZoom();
             var diff = myZoom.start - myZoom.end;
 
-            allDataWithCircle.forEach(function(data) {
+            allDataWithCircle.forEach(function (data) {
               if (data.circle) {
                 if (diff > 0) {
                   data.circle.setRadius(data.circle.getRadius() * 1);
@@ -220,9 +239,12 @@
           // stats button click event
 
           var statsButtonEl = document.querySelectorAll('.stats-button');
-          statsButtonEl.forEach(function(button) {
+          statsButtonEl.forEach(function (button) {
             button.addEventListener('click', handleClickStatsButton);
           });
         });
+    })
+    .catch(function (err) {
+      throw Error(err);
     });
 })();

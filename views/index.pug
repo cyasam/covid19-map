@@ -3,7 +3,9 @@ extends layout.pug
 block content
   div(id="map")
  
-  include ./includes/summary.pug
+  div(id="right-column")
+    include ./includes/summary.pug
+    include ./includes/country-list.pug
 
   div(id="loading")
     div(class="lds-dual-ring")

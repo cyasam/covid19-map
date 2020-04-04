@@ -28,7 +28,53 @@ const getAllCaseDataByCountry = async () => {
   }
 };
 
-const getCaseDataByCountry = async country => {
+const getModifiedAllCaseDataByCountry = async () => {
+  const allCountriesData = await getAllCaseDataByCountry();
+
+  const modifiedAllCaseData = allCountriesData.map((data) => {
+    const {
+      country,
+      cases: confirmed,
+      todayCases: todayConfirmed,
+      todayActive,
+      todayDeaths,
+      todayRecovered,
+      active,
+      recovered,
+      deaths,
+      countryInfo: { lat: latitude, long: longitude, iso2 },
+      updated,
+    } = data;
+
+    const flag = iso2 ? `/images/flags/${iso2.toLowerCase()}.png` : null;
+
+    return {
+      country,
+      flag,
+      coordinates: {
+        latitude,
+        longitude,
+      },
+      stats: {
+        confirmed,
+        active,
+        recovered,
+        deaths,
+        today: {
+          confirmed: todayConfirmed,
+          active: todayActive || null,
+          deaths: todayDeaths,
+          recovered: todayRecovered || null,
+        },
+      },
+      lastUpdated: formatDate(updated),
+    };
+  });
+
+  return modifiedAllCaseData;
+};
+
+const getCaseDataByCountry = async (country) => {
   const url = `${API_URL}/countries/${country}`;
 
   try {
@@ -62,11 +108,11 @@ const storeAllCountriesInJson = async () => {
         province,
         coordinates,
       };
-    },
+    }
   );
   var data = JSON.stringify(modifiedCountryList);
 
-  fs.writeFile('./data/countries.json', data, function(err) {
+  fs.writeFile('./data/countries.json', data, function (err) {
     if (err) {
       console.log('There has been an error saving your countries list.');
       console.log(err.message);
@@ -85,21 +131,27 @@ const getAllCountriesListFromJson = () => {
   }
 };
 
-const formatDate = updated => {
+const formatDate = (updated) => {
   return moment(updated).format('DD MMM YYYY HH:mm');
 };
 
-const formatNumber = number => {
+const formatDateRelative = (updated) => {
+  return moment(updated).fromNow();
+};
+
+const formatNumber = (number) => {
   return new Intl.NumberFormat('en-US').format(number);
 };
 
 module.exports = {
   getAllCaseData,
   getAllCaseDataByCountry,
+  getModifiedAllCaseDataByCountry,
   getCaseDataByCountry,
   getAllCountriesData,
   storeAllCountriesInJson,
   getAllCountriesListFromJson,
   formatDate,
+  formatDateRelative,
   formatNumber,
 };

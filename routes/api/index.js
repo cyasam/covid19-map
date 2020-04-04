@@ -3,55 +3,13 @@ var router = express.Router();
 
 const {
   getAllCountriesData,
-  getAllCaseDataByCountry,
-  formatDate,
+  getModifiedAllCaseDataByCountry,
 } = require('../../utils/index');
 
 /* GET api all data. */
-router.get('/all-data', async function(req, res, next) {
+router.get('/all-data', async function (req, res, next) {
   try {
-    const allCountriesData = await getAllCaseDataByCountry();
-
-    const modifiedAllCaseData = allCountriesData.map(data => {
-      const {
-        country,
-        cases: confirmed,
-        todayCases: todayConfirmed,
-        todayActive,
-        todayDeaths,
-        todayRecovered,
-        active,
-        recovered,
-        deaths,
-        countryInfo: { lat: latitude, long: longitude, iso2 },
-        updated,
-      } = data;
-
-      const flag = iso2 ? `/images/flags/${iso2.toLowerCase()}.png` : null;
-
-      return {
-        country,
-        flag,
-        coordinates: {
-          latitude,
-          longitude,
-        },
-        stats: {
-          confirmed,
-          active,
-          recovered,
-          deaths,
-          today: {
-            confirmed: todayConfirmed,
-            active: todayActive || null,
-            deaths: todayDeaths,
-            recovered: todayRecovered || null,
-          },
-        },
-        lastUpdated: formatDate(updated),
-      };
-    });
-
+    const modifiedAllCaseData = await getModifiedAllCaseDataByCountry();
     res.json(modifiedAllCaseData);
   } catch (err) {
     res.status(500).json({
@@ -62,11 +20,11 @@ router.get('/all-data', async function(req, res, next) {
 });
 
 /* GET api all data old. */
-router.get('/all-data-old', async function(req, res, next) {
+router.get('/all-data-old', async function (req, res, next) {
   try {
     const allCountriesData = await getAllCountriesData();
 
-    const modifiedAllCaseData = allCountriesData.map(data => {
+    const modifiedAllCaseData = allCountriesData.map((data) => {
       var active =
         parseInt(data.stats.confirmed) -
         (parseInt(data.stats.recovered) + parseInt(data.stats.deaths));
