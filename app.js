@@ -6,7 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api/index');
-var { storeAllCountriesInJson } = require('./utils/index');
+//var { storeAllCountriesInJson } = require('./utils/index');
 
 var app = express();
 
