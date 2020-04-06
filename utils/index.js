@@ -31,7 +31,7 @@ const getAllCaseDataByCountry = async () => {
 const getModifiedAllCaseDataByCountry = async () => {
   const allCountriesData = await getAllCaseDataByCountry();
 
-  const modifiedAllCaseData = allCountriesData.map((data) => {
+  const modifiedAllCaseData = allCountriesData.map(data => {
     const {
       country,
       cases: confirmed,
@@ -71,10 +71,12 @@ const getModifiedAllCaseDataByCountry = async () => {
     };
   });
 
-  return modifiedAllCaseData;
+  return modifiedAllCaseData.sort(function(a, b) {
+    return b.stats.confirmed - a.stats.confirmed;
+  });
 };
 
-const getCaseDataByCountry = async (country) => {
+const getCaseDataByCountry = async country => {
   const url = `${API_URL}/countries/${country}`;
 
   try {
@@ -108,11 +110,11 @@ const storeAllCountriesInJson = async () => {
         province,
         coordinates,
       };
-    }
+    },
   );
   var data = JSON.stringify(modifiedCountryList);
 
-  fs.writeFile('./data/countries.json', data, function (err) {
+  fs.writeFile('./data/countries.json', data, function(err) {
     if (err) {
       console.log('There has been an error saving your countries list.');
       console.log(err.message);
@@ -131,15 +133,15 @@ const getAllCountriesListFromJson = () => {
   }
 };
 
-const formatDate = (updated) => {
+const formatDate = updated => {
   return moment(updated).format('DD MMM YYYY HH:mm');
 };
 
-const formatDateRelative = (updated) => {
+const formatDateRelative = updated => {
   return moment(updated).fromNow();
 };
 
-const formatNumber = (number) => {
+const formatNumber = number => {
   return new Intl.NumberFormat('en-US').format(number);
 };
 
