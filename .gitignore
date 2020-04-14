@@ -1,3 +1,4 @@
 node_modules
 functions
 .env
+index-bundle.js
