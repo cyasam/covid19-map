@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "bundle-js": "npx babel ./public/javascripts/index.js --watch --out-file ./public/javascripts/index-bundle.js",
+    "bundle-js": "npx babel ./public/javascripts/index.js --out-file ./public/javascripts/index-bundle.js",
     "heroku-postbuild": "npm run bundle-js"
   },
   "dependencies": {
