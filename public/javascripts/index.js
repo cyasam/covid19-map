@@ -195,7 +195,7 @@
       return response.json();
     })
     .then(function (allData) {
-      fetch('http://ip-api.com/json')
+      fetch('https://ipapi.co/json')
         .then(function (response) {
           return response.json();
         })
@@ -205,7 +205,7 @@
           var map = L.map('map').setView([45, 35], 4);
           map.zoomControl.setPosition('bottomleft');
 
-          map.panTo(new L.LatLng(geoData.lat, geoData.lon));
+          map.panTo(new L.LatLng(geoData.latitude, geoData.longitude));
 
           createTile(map);
 
