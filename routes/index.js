@@ -21,19 +21,22 @@ router.get('/', async function (req, res, next) {
 
   const allCountriesData = await getModifiedAllCaseDataByCountry();
 
-  const modifiedAllCaseData = allCountriesData.map(({ country, ...data }) => {
-    const { confirmed, active, recovered, deaths } = data.stats;
+  const modifiedAllCaseData = allCountriesData.map(
+    ({ country, flagSmall, ...data }) => {
+      const { confirmed, active, recovered, deaths } = data.stats;
 
-    return {
-      country,
-      stats: {
-        confirmed: formatNumber(confirmed),
-        active: formatNumber(active),
-        recovered: formatNumber(recovered),
-        deaths: formatNumber(deaths),
-      },
-    };
-  });
+      return {
+        country,
+        flagSmall,
+        stats: {
+          confirmed: formatNumber(confirmed),
+          active: formatNumber(active),
+          recovered: formatNumber(recovered),
+          deaths: formatNumber(deaths),
+        },
+      };
+    }
+  );
 
   res.render('index', {
     title: 'COVID-19 Spread Map',

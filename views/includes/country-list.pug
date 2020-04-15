@@ -3,7 +3,10 @@ div(class="country-list" data-selected-stats-type="confirmed")
     each data in allCountries
       li(class="country")
         a(href="#")
-          span(class="name") #{data.country}
+          span(class="name")
+            if data.flagSmall
+              img(src=data.flagSmall, width="40", alt=data.country) 
+            span #{data.country}
           span(class="stat show" data-stats-type="confirmed") #{data.stats.confirmed}
           span(class="stat" data-stats-type="active") #{data.stats.active}
           span(class="stat" data-stats-type="deaths") #{data.stats.deaths}

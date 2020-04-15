@@ -380,6 +380,17 @@ body {
   display: none;
 }
 
+.country-list span {
+  display: flex;
+  align-items: center;
+}
+
+.country-list img {
+  width: auto;
+  max-height: 24px;
+  margin-right: 15px;
+}
+
 .country-list .stat.show {
   display: block;
 }
