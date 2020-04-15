@@ -3,14 +3,78 @@
 (function () {
   cssVars();
 
-  var allDataWithCircle;
+  var allDataWithCircle,
+    map,
+    mapZoom,
+    viewportBreakPoint,
+    viewportBreakPointChanged = false;
+
+  function setViewportBreakPoint() {
+    var width = document.documentElement.clientWidth;
+    if (
+      (!viewportBreakPoint || viewportBreakPoint === 'desktop') &&
+      width < 768
+    ) {
+      if (!!viewportBreakPoint) {
+        viewportBreakPointChanged = true;
+      }
+
+      viewportBreakPoint = 'mobile';
+    } else if (
+      (!viewportBreakPoint || viewportBreakPoint === 'mobile') &&
+      width >= 768
+    ) {
+      if (!!viewportBreakPoint) {
+        viewportBreakPointChanged = true;
+      }
+
+      viewportBreakPoint = 'desktop';
+    } else {
+      viewportBreakPointChanged = false;
+    }
+  }
+
+  function setZoomLevel() {
+    return viewportBreakPoint === 'mobile' ? 2 : 4;
+  }
+
+  function setCircleSize(arg, callback) {
+    allDataWithCircle.forEach(function (data) {
+      if (data.circle) {
+        callback({
+          circle: data.circle,
+          props: arg,
+        });
+      }
+    });
+  }
+
+  function setResizeCircleSize() {
+    setCircleSize(null, function (arg) {
+      if (viewportBreakPoint === 'mobile') {
+        arg.circle.setRadius(arg.circle.getRadius() / 2);
+      } else {
+        arg.circle.setRadius(arg.circle.getRadius() * 2);
+      }
+    });
+  }
+
+  window.addEventListener('resize', function () {
+    setViewportBreakPoint();
+
+    if (viewportBreakPointChanged) {
+      mapZoom = setZoomLevel();
+      map.setZoom(mapZoom);
+      setResizeCircleSize();
+    }
+  });
 
   function createTile(map) {
     L.tileLayer(
       'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
       {
         attribution:
-          'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         minZoom: 2,
         id: 'cyasam/ck91kmvhm1a7p1il39crm48a3',
         tileSize: 512,
@@ -203,9 +267,11 @@
         })
         .then(function (geoData) {
           document.getElementById('loading').remove();
+          setViewportBreakPoint();
 
-          var map = L.map('map').setView([45, 35], 4);
-          map.zoomControl.setPosition('bottomleft');
+          mapZoom = setZoomLevel();
+          map = L.map('map').setView([45, 35], mapZoom);
+          map.zoomControl.setPosition('topleft');
 
           map.panTo(new L.LatLng(geoData.latitude, geoData.longitude));
 
@@ -214,28 +280,10 @@
           allDataWithCircle = getAllDataWithCircle(allData, map);
           createCircles(allDataWithCircle, map);
 
-          var myZoom = {
-            start: map.getZoom(),
-            end: map.getZoom(),
-          };
-
-          map.on('zoomstart', function (e) {
-            myZoom.start = map.getZoom();
-          });
-
-          map.on('zoomend', function (e) {
-            myZoom.end = map.getZoom();
-            var diff = myZoom.start - myZoom.end;
-
-            allDataWithCircle.forEach(function (data) {
-              if (data.circle) {
-                if (diff > 0) {
-                  data.circle.setRadius(data.circle.getRadius() * 1);
-                } else if (diff < 0) {
-                  data.circle.setRadius(data.circle.getRadius() / 1);
-                }
-              }
-            });
+          setCircleSize(null, function (arg) {
+            if (viewportBreakPoint === 'mobile') {
+              arg.circle.setRadius(arg.circle.getRadius() / 2);
+            }
           });
 
           // stats button click event

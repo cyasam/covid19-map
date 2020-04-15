@@ -249,7 +249,7 @@ body {
   padding: 20px;
 }
 
-/* right-column */
+/* stats-block */
 
 .stats-button {
   padding: 14px;
@@ -257,7 +257,7 @@ body {
   color: #fff;
   background-color: transparent;
   border: 3px solid var(--confirmed-color);
-  border-radius: 30px;
+  border-radius: 15px;
 }
 
 .stats-button:focus {
@@ -300,7 +300,7 @@ body {
   pointer-events: none;
 }
 
-#right-column {
+#stats-block {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -364,7 +364,8 @@ body {
   margin-bottom: 10px;
 }
 
-.country-list ul li a {
+.country-list ul li .button {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -374,6 +375,7 @@ body {
   border: 1px solid var(--confirmed-color);
   background-color: var(--confirmed-color);
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .country-list .stat {
@@ -395,17 +397,40 @@ body {
   display: block;
 }
 
-.country-list[data-selected-stats-type='active'] a {
+.country-list[data-selected-stats-type='active'] .button {
   border-color: var(--active-color);
   background-color: var(--active-color);
 }
 
-.country-list[data-selected-stats-type='deaths'] a {
+.country-list[data-selected-stats-type='deaths'] .button {
   border-color: var(--deaths-color);
   background-color: var(--deaths-color);
 }
 
-.country-list[data-selected-stats-type='recovered'] a {
+.country-list[data-selected-stats-type='recovered'] .button {
   border-color: var(--recovered-color);
   background-color: var(--recovered-color);
+}
+
+@media only screen and (max-width: 767px) {
+  #map {
+    flex: 1;
+  }
+  #stats-block {
+    flex: 1;
+    position: static;
+    width: 100%;
+  }
+
+  .summary h1 {
+    font-size: 22px;
+  }
+
+  .stats-button {
+    padding: 10px;
+  }
+
+  .stats-button h4 {
+    font-size: 16px;
+  }
 }

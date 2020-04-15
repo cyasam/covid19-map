@@ -2,7 +2,7 @@ div(class="country-list" data-selected-stats-type="confirmed")
   ul(class="list")
     each data in allCountries
       li(class="country")
-        a(href="#")
+        button(class="button")
           span(class="name")
             if data.flagSmall
               img(src=data.flagSmall, width="40", alt=data.country) 
