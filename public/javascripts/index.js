@@ -12,7 +12,7 @@
         attribution:
           'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         minZoom: 2,
-        id: 'mapbox/dark-v10',
+        id: 'cyasam/ck91kmvhm1a7p1il39crm48a3',
         tileSize: 512,
         zoomOffset: -1,
         wheelDebounceTime: 100,
