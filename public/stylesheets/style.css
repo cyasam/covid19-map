@@ -147,20 +147,29 @@ body {
 .case-tooltip-flag .title {
   position: absolute;
   z-index: 2;
-  left: 50%;
-  top: 50%;
-  transform: translate3d(-50%, -50%, 0);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+}
+
+.case-tooltip-flag .today-wrapper {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
 }
 
 .case-tooltip-flag .today {
   display: flex;
   align-items: center;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate3d(-50%, 0, 0);
-  z-index: 1;
   padding: 3px 12px;
   font-size: 14px;
   margin: 0;

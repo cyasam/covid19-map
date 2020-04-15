@@ -110,7 +110,9 @@
         </div>
         ${
           todayStat > 0
-            ? `<p class="today ${mapType}">+${formatNumber(todayStat)}</p>`
+            ? `<div class="today-wrapper"><p class="today ${mapType}">+${formatNumber(
+                todayStat
+              )}</p></div>`
             : ''
         }
       </figure>
