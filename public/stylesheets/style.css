@@ -337,7 +337,6 @@ body {
 }
 
 .summary .stats-button {
-  width: calc(50% - 10px);
   margin-right: 10px;
   margin-bottom: 10px;
 }
@@ -412,7 +411,17 @@ body {
   background-color: var(--recovered-color);
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (min-width: 1024px) {
+  .summary .stats-button {
+    width: calc((100% - 10px) / 2);
+  }
+
+  .summary .stats-button:nth-child(2n) {
+    margin-right: 0;
+  }
+}
+
+@media only screen and (max-width: 1023px) {
   #map {
     flex: 1;
   }
@@ -432,5 +441,23 @@ body {
 
   .stats-button h4 {
     font-size: 16px;
+  }
+
+  .summary .stats-button {
+    width: calc((100% - 30px) / 4);
+  }
+
+  .summary .stats-button:last-child {
+    margin-right: 0;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .summary .stats-button {
+    width: calc((100% - 10px) / 2);
+  }
+
+  .summary .stats-button:nth-child(2n) {
+    margin-right: 0;
   }
 }

@@ -13,7 +13,7 @@
     var width = document.documentElement.clientWidth;
     if (
       (!viewportBreakPoint || viewportBreakPoint === 'desktop') &&
-      width < 768
+      width < 1024
     ) {
       if (!!viewportBreakPoint) {
         viewportBreakPointChanged = true;
@@ -22,7 +22,7 @@
       viewportBreakPoint = 'mobile';
     } else if (
       (!viewportBreakPoint || viewportBreakPoint === 'mobile') &&
-      width >= 768
+      width >= 1024
     ) {
       if (!!viewportBreakPoint) {
         viewportBreakPointChanged = true;
@@ -35,7 +35,7 @@
   }
 
   function setZoomLevel() {
-    return viewportBreakPoint === 'mobile' ? 2 : 4;
+    return viewportBreakPoint === 'mobile' ? 3 : 4;
   }
 
   function setCircleSize(arg, callback) {
@@ -82,7 +82,7 @@
         wheelDebounceTime: 100,
         accessToken:
           'pk.eyJ1IjoiY3lhc2FtIiwiYSI6ImNrODM0d2t5aDAwdmYzbWp1aHVwa29wMTAifQ.EYyara4FIFASFahgWAiVWw',
-      }
+      },
     ).addTo(map);
   }
 
@@ -175,7 +175,7 @@
         ${
           todayStat > 0
             ? `<div class="today-wrapper"><p class="today ${mapType}">+${formatNumber(
-                todayStat
+                todayStat,
               )}</p></div>`
             : ''
         }
@@ -223,7 +223,7 @@
     countryListEl[0].setAttribute('data-selected-stats-type', props.mapType);
 
     var countryListLiStatsEl = countryListEl[0].querySelectorAll(
-      '.country .stat'
+      '.country .stat',
     );
 
     countryListLiStatsEl.forEach(function (stat) {
