@@ -52,13 +52,9 @@
   function setResizeCircleSize() {
     setCircleSize(null, function (arg) {
       if (viewportBreakPoint === 'mobile') {
-        arg.circleData.circle.setRadius(
-          arg.circleData.circle.getRadius() / 1.5,
-        );
+        arg.circleData.circle.setRadius(arg.circleData.circle.getRadius() / 2);
       } else if (viewportBreakPoint === 'desktop') {
-        arg.circleData.circle.setRadius(
-          arg.circleData.circle.getRadius() * 1.5,
-        );
+        arg.circleData.circle.setRadius(arg.circleData.circle.getRadius() * 2);
       }
     });
   }
@@ -92,7 +88,9 @@
 
   function setCircleRadius(number) {
     var val;
-    if (number >= 10 && number < 100) {
+    if (number >= 5 && number < 10) {
+      val = 6;
+    } else if (number >= 10 && number < 100) {
       val = 8;
     } else if (number >= 100 && number < 500) {
       val = 10;
@@ -105,11 +103,11 @@
     } else if (number >= 50000) {
       val = 40;
     } else {
-      val = 7;
+      val = 5;
     }
 
     if (viewportBreakPoint === 'mobile') {
-      return val / 1.5;
+      return val / 2;
     }
 
     return val;
