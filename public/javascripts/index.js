@@ -42,7 +42,7 @@
     allDataWithCircle.forEach(function (data) {
       if (data.circle) {
         callback({
-          circle: data.circle,
+          circleData: data,
           props: arg,
         });
       }
@@ -52,9 +52,9 @@
   function setResizeCircleSize() {
     setCircleSize(null, function (arg) {
       if (viewportBreakPoint === 'mobile') {
-        arg.circle.setRadius(arg.circle.getRadius() / 2);
-      } else {
-        arg.circle.setRadius(arg.circle.getRadius() * 2);
+        arg.circleData.circle.setRadius(arg.circleData.circle.getRadius() / 2);
+      } else if (viewportBreakPoint === 'desktop') {
+        arg.circleData.circle.setRadius(arg.circleData.circle.getRadius() * 2);
       }
     });
   }
@@ -87,23 +87,30 @@
   }
 
   function setCircleRadius(number) {
+    var val;
     if (number >= 5 && number < 10) {
-      return 6;
+      val = 6;
     } else if (number >= 10 && number < 100) {
-      return 8;
+      val = 8;
     } else if (number >= 100 && number < 500) {
-      return 10;
+      val = 10;
     } else if (number >= 500 && number < 1000) {
-      return 12;
+      val = 12;
     } else if (number >= 1000 && number < 10000) {
-      return 20;
+      val = 20;
     } else if (number >= 10000 && number < 50000) {
-      return 30;
+      val = 30;
     } else if (number >= 50000) {
-      return 40;
+      val = 40;
     } else {
-      return 5;
+      val = 5;
     }
+
+    if (viewportBreakPoint === 'mobile') {
+      return val / 2;
+    }
+
+    return val;
   }
 
   function formatNumber(number) {
@@ -205,16 +212,19 @@
   }
 
   function changeCircleProps(props) {
-    allDataWithCircle.forEach(function (data) {
-      if (data.circle) {
-        data.circle.setRadius(setCircleRadius(data.stats[props.mapType]));
-        data.circle.setStyle({
-          fillColor: props.bgColor,
-          color: props.borderColor,
-        });
+    setCircleSize(null, function (arg) {
+      arg.circleData.circle.setRadius(
+        setCircleRadius(arg.circleData.stats[props.mapType]),
+      );
 
-        data.circle.setTooltipContent(createTooltipHtml(data, props.mapType));
-      }
+      arg.circleData.circle.setStyle({
+        fillColor: props.bgColor,
+        color: props.borderColor,
+      });
+
+      arg.circleData.circle.setTooltipContent(
+        createTooltipHtml(arg.circleData, props.mapType),
+      );
     });
   }
 
@@ -279,12 +289,6 @@
 
           allDataWithCircle = getAllDataWithCircle(allData, map);
           createCircles(allDataWithCircle, map);
-
-          setCircleSize(null, function (arg) {
-            if (viewportBreakPoint === 'mobile') {
-              arg.circle.setRadius(arg.circle.getRadius() / 2);
-            }
-          });
 
           // stats button click event
 
