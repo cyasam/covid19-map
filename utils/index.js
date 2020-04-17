@@ -2,7 +2,7 @@ const fs = require('fs');
 const axios = require('axios');
 var moment = require('moment');
 
-const API_URL = 'https://corona.lmao.ninja';
+const API_URL = 'https://corona.lmao.ninja/v2';
 
 const getAllCaseData = async () => {
   const url = `${API_URL}/all`;
@@ -114,7 +114,7 @@ const storeAllCountriesInJson = async () => {
         province,
         coordinates,
       };
-    }
+    },
   );
   var data = JSON.stringify(modifiedCountryList);
 
