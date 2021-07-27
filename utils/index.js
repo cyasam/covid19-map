@@ -2,7 +2,7 @@ const fs = require('fs');
 const axios = require('axios');
 var moment = require('moment');
 
-const API_URL = 'https://corona.lmao.ninja/v2';
+const API_URL = process.env.API_URL;
 
 const getAllCaseData = async () => {
   const url = `${API_URL}/all`;
@@ -114,7 +114,7 @@ const storeAllCountriesInJson = async () => {
         province,
         coordinates,
       };
-    },
+    }
   );
   var data = JSON.stringify(modifiedCountryList);
 
@@ -134,6 +134,18 @@ const getAllCountriesListFromJson = () => {
     return JSON.parse(data);
   } catch (err) {
     throw err;
+  }
+};
+
+const getIPData = async () => {
+  const url = 'https://ipapi.co/json';
+
+  try {
+    const response = await axios.get(url);
+    const data = response.data;
+    return data;
+  } catch (error) {
+    return error;
   }
 };
 
@@ -157,6 +169,7 @@ module.exports = {
   getAllCountriesData,
   storeAllCountriesInJson,
   getAllCountriesListFromJson,
+  getIPData,
   formatDate,
   formatDateRelative,
   formatNumber,

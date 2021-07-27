@@ -4,6 +4,7 @@ var router = express.Router();
 const {
   getAllCountriesData,
   getModifiedAllCaseDataByCountry,
+  getIPData,
 } = require('../../utils/index');
 
 /* GET api all data. */
@@ -11,6 +12,19 @@ router.get('/all-data', async function (req, res, next) {
   try {
     const modifiedAllCaseData = await getModifiedAllCaseDataByCountry();
     res.json(modifiedAllCaseData);
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+});
+
+/* GET api all data. */
+router.get('/ip-data', async function (req, res, next) {
+  try {
+    const ipData = await getIPData();
+    res.json(ipData);
   } catch (err) {
     res.status(500).json({
       status: 'error',

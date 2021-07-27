@@ -82,7 +82,7 @@
         wheelDebounceTime: 100,
         accessToken:
           'pk.eyJ1IjoiY3lhc2FtIiwiYSI6ImNrODM0d2t5aDAwdmYzbWp1aHVwa29wMTAifQ.EYyara4FIFASFahgWAiVWw',
-      },
+      }
     ).addTo(map);
   }
 
@@ -182,7 +182,7 @@
         ${
           todayStat > 0
             ? `<div class="today-wrapper"><p class="today ${mapType}">+${formatNumber(
-                todayStat,
+                todayStat
               )}</p></div>`
             : ''
         }
@@ -214,7 +214,7 @@
   function changeCircleProps(props) {
     setCircleSize(null, function (arg) {
       arg.circleData.circle.setRadius(
-        setCircleRadius(arg.circleData.stats[props.mapType]),
+        setCircleRadius(arg.circleData.stats[props.mapType])
       );
 
       arg.circleData.circle.setStyle({
@@ -223,7 +223,7 @@
       });
 
       arg.circleData.circle.setTooltipContent(
-        createTooltipHtml(arg.circleData, props.mapType),
+        createTooltipHtml(arg.circleData, props.mapType)
       );
     });
   }
@@ -232,9 +232,8 @@
     var countryListEl = document.getElementsByClassName('country-list');
     countryListEl[0].setAttribute('data-selected-stats-type', props.mapType);
 
-    var countryListLiStatsEl = countryListEl[0].querySelectorAll(
-      '.country .stat',
-    );
+    var countryListLiStatsEl =
+      countryListEl[0].querySelectorAll('.country .stat');
 
     countryListLiStatsEl.forEach(function (stat) {
       if (stat.classList.contains('show')) {
@@ -271,7 +270,7 @@
       return response.json();
     })
     .then(function (allData) {
-      fetch('https://ipapi.co/json')
+      fetch('/api/ip-data')
         .then(function (response) {
           return response.json();
         })
