@@ -23,7 +23,7 @@ router.get('/all-data', async function (req, res, next) {
 /* GET api all data. */
 router.get('/ip-data', async function (req, res, next) {
   try {
-    const ipData = await getIPData();
+    const ipData = await getIPData(req);
     res.json(ipData);
   } catch (err) {
     res.status(500).json({

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const axios = require('axios');
-var moment = require('moment');
+const moment = require('moment');
+const requestIp = require('request-ip');
 
 const API_URL = process.env.API_URL;
 
@@ -137,8 +138,14 @@ const getAllCountriesListFromJson = () => {
   }
 };
 
-const getIPData = async () => {
-  const url = 'https://ipapi.co/json';
+const getIPData = async (req) => {
+  let clientIp = null;
+
+  if (process.env.ENVIRONMENT !== 'development') {
+    clientIp = requestIp.getClientIp(req);
+  }
+
+  const url = `https://ipapi.co/${clientIp ? `${clientIp}/` : ''}json`;
 
   try {
     const response = await axios.get(url);
